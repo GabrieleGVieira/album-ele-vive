@@ -1,12 +1,14 @@
 "use client";
 import style from "./style.module.css";
-import { Button, Space, Typography, Input, DatePicker, Select } from "antd";
+import { Button, Space, Input, DatePicker, Select } from "antd";
 import { CSSProperties } from "react";
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
-import { Group, Parish } from "@/types/database";
+import { Parish } from "@/types/database";
+
+import { Typography } from 'antd';
 
 const { Text } = Typography;
 
