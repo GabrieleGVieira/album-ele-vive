@@ -1,20 +1,50 @@
-"use client"
+"use client";
 import { Empty, Layout, Progress, Space } from "antd";
 import { MehOutlined } from "@ant-design/icons";
 import { Content } from "antd/es/layout/layout";
-import { Typography } from 'antd';
-import { AlbumWithRelations } from "@/types/database";
+import { Typography } from "antd";
+import { AlbumWithRelations, CategoryWithStats } from "@/types/database";
 import { CategoryCard } from "./CategoryCard";
 import { useRouter } from "next/navigation";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useEffect, useState } from "react";
+import { getAlbum, getOwnedStickers } from "@/lib/getAlbum";
 
 const { Title } = Typography;
 
-type AlbumProps = {
-    album: AlbumWithRelations
-}
-export default function AlbumHome({album} : AlbumProps) {
-    const categories = album.category
-    const router = useRouter();
+export default function AlbumHome() {
+  const { profile } = useUserProfile();
+  const userID = profile?.id ? profile.id : "0";
+
+  const [album, setAlbum] = useState<AlbumWithRelations>(
+    {} as AlbumWithRelations,
+  );
+  const [coladas, setColadas] = useState(0);
+  const percent =
+    album.total > 0 ? Math.round((coladas / album.total) * 100) : 0;
+
+  useEffect(() => {
+    async function fetchSticker() {
+      const data = await getOwnedStickers(userID);
+      setColadas(data);
+    }
+
+    if (userID) fetchSticker();
+  }, [userID]);
+
+  useEffect(() => {
+    async function fetchAlbum() {
+      const data = await getAlbum(userID);
+      setAlbum(data);
+    }
+
+    if (userID) fetchAlbum();
+  }, [userID]);
+
+  const categories = album?.category? album.category.sort((a, b) => {
+    return (a.position ?? 0) - (b.position ?? 0);
+  }) : []
+  const router = useRouter();
 
   if (!album) {
     return (
@@ -34,6 +64,7 @@ export default function AlbumHome({album} : AlbumProps) {
           maxWidth: 1200,
           margin: "0 auto",
           padding: "24px 16px",
+          alignContent: "space-between",
         }}
       >
         <Title
@@ -41,7 +72,7 @@ export default function AlbumHome({album} : AlbumProps) {
           style={{
             marginBottom: 24,
             textAlign: "center",
-            color: "#016021"
+            color: "#016021",
           }}
         >
           {album.title}
@@ -52,28 +83,37 @@ export default function AlbumHome({album} : AlbumProps) {
             style={{
               marginBottom: 24,
               textAlign: "center",
-              color: "#FAAE00"
+              color: "#FAAE00",
             }}
           >
             {album.subtitle}
           </Title>
         )}
 
-        <Progress percent={30} />
+        <Progress percent={percent} />
 
-       <Space orientation="vertical" style={{ width: '100%' }} size={16}>
+        <Space
+          orientation="vertical"
+          style={{ width: "100%", paddingTop: "20px" }}
+          size={16}
+        >
           {categories.map((category) => (
-            <div key={category.id} style={{ width: '100%' }}>
-              <div 
-                onClick={() => router.push("/category/[:id]")}
-                style={{ cursor: 'pointer', transition: '0.3s' }}
+            <div key={category.id} style={{ width: "100%" }}>
+              <div
+                onClick={() => router.push(`/album/${category.id}`)}
+                style={{ cursor: "pointer", transition: "0.3s" }}
               >
-                <CategoryCard image_url="/setor-juventude.jpeg" name={category.name} total={category.total} />
+                <CategoryCard
+                  image_url="/setor-juventude.jpeg"
+                  name={category.name}
+                  total={category.total}
+                  coladas={category.owned_stickers}
+                />
               </div>
             </div>
           ))}
         </Space>
-        </Content>
+      </Content>
     </Layout>
   );
 }

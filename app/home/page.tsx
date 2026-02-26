@@ -17,7 +17,7 @@ export default function HomePage() {
       <Space orientation="vertical" size="large" >
         <Button size="large" style={{ width: 220 }} onClick={() => router.push("/album")}>Album</Button>
         <Button size="large" style={{ width: 220 }} onClick={() => router.push("/stickers")}>Figurinhas</Button>
-        <Button size="large" style={{ width: 220 }}>Ranking</Button>
+        <Button size="large" style={{ width: 220 }} disabled>Ranking</Button>
       </Space>
     </div>
   )
