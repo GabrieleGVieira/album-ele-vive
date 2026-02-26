@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Typography, Badge, Button, Image, Space } from "antd";
+import { Row, Col, Typography, Button, Image, Space } from "antd";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   GiftOutlined,
-  ThunderboltFilled,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { openPack } from "@/lib/packs/open";
@@ -53,7 +52,7 @@ export default function PackInventory() {
       setTotalPacks(data.quantity);
     }
     fetchPacks();
-  }, [userID]);
+  }, [userID, openedPackId]);
 
   return (
     <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>

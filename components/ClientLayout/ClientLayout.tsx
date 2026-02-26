@@ -16,7 +16,7 @@ export default function ClientLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  const isHome = pathname === "/" || pathname === "/home";
+  const isHome = pathname === "/" || pathname === "/home" || pathname === "/onboarding";
 
   return (
     <html lang="pt-BR">

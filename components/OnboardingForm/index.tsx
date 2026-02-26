@@ -1,7 +1,6 @@
 "use client";
 import style from "./style.module.css";
 import { Button, Space, Input, DatePicker, Select } from "antd";
-import { CSSProperties } from "react";
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -40,7 +39,7 @@ export default function OnboardingForm() {
       }),
     });
 
-    router.push("/album");
+    router.push("/home");
   };
 
   useEffect(() => {
@@ -54,16 +53,6 @@ export default function OnboardingForm() {
 
   return (
     <div className={style.loginPage}>
-      {/* <section>
-        <Image
-          src="/setor-juventude.jpeg"
-          alt="setor-juventude-logo"
-          // width="10"
-          // height="10"
-          style={imgStyle}
-        />
-      </section> */}
-
       <Space orientation="vertical" size={25} style={{ alignItems: "center" }}>
         <Text strong>Bem Vindo</Text>
         <Text strong>Cristo Vive e te quer vivo</Text>
@@ -104,8 +93,3 @@ export default function OnboardingForm() {
   );
 }
 
-const imgStyle: CSSProperties = {
-  width: "100%",
-  maxWidth: "500px",
-  height: "initial",
-};

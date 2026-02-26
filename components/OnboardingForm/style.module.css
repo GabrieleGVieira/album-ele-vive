@@ -3,24 +3,19 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 80vh;
     min-width: 100vw;
-
-    /* background: url("/login-bg.svg"); */
-    /* background-repeat: no-repeat;
-    background-size: cover; */
+    margin: 0
 }
 
 .loginPage > section {
     text-align: center;
     width: 100%;
     max-width: 400px;
-    margin: 20px 0;
+    margin: 40px 0;
 }
 
 .loginPage .loginPage__Box {
-    /* display: flex; */
-    background: white;
     justify-content: center;
     align-items: center;
     min-height: 175px;
