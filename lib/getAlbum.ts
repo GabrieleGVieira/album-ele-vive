@@ -3,14 +3,14 @@ import {
   AlbumWithRelations,
   Category,
   CategoryWithRelations,
-  CategoryWithStats,
   StickerFromSupabase,
 } from "@/types/database";
 
 export async function getAlbum(userID: string): Promise<AlbumWithRelations> {
   const { data, error } = await supabase
     .from("album")
-    .select(`
+    .select(
+      `
       *,
       category (
         *,
@@ -21,7 +21,8 @@ export async function getAlbum(userID: string): Promise<AlbumWithRelations> {
           )
         )
       )
-    `)
+    `,
+    )
     .eq("is_active", true)
     .eq("category.sticker.user_sticker.user_id", userID)
     .maybeSingle();
@@ -31,18 +32,21 @@ export async function getAlbum(userID: string): Promise<AlbumWithRelations> {
 
   const rawAlbum = data as AlbumWithRelations;
 
-  const formattedCategories = rawAlbum.category.map((cat): CategoryWithStats => {
-    const stickersWithOwnership = cat.sticker.map((s) => ({
-      ...s,
-      is_owned: s.user_sticker && s.user_sticker.length > 0,
-    }));
+  const formattedCategories = rawAlbum.category.map((cat): Category => {
+    const stickersWithOwnership = cat.sticker
+      ? cat.sticker.map((s) => ({
+          ...s,
+          is_owned: s.user_sticker && s.user_sticker.length > 0,
+        }))
+      : [];
 
     const owned = stickersWithOwnership.filter((s) => s.is_owned).length;
-    const percentage = cat.total > 0 ? Math.round((owned / cat.total) * 100) : 0;
+    const percentage =
+      cat.total > 0 ? Math.round((owned / cat.total) * 100) : 0;
 
     return {
       ...cat,
-      sticker: cat.sticker, 
+      sticker: cat.sticker,
       owned_stickers: owned,
       progress_percent: percentage,
     };
@@ -57,7 +61,7 @@ export async function getAlbum(userID: string): Promise<AlbumWithRelations> {
 export async function getOwnedStickers(userID: string): Promise<number> {
   const { count, error } = await supabase
     .from("user_sticker")
-    .select("*", { count: "exact", head: true }) 
+    .select("*", { count: "exact", head: true })
     .eq("user_id", userID);
 
   if (error) {
@@ -96,7 +100,7 @@ export async function getCategory(
 
   const formattedData: CategoryWithRelations = {
     ...supabaseData,
-    sticker: supabaseData.sticker.map((s: StickerFromSupabase) => ({
+    sticker: supabaseData.sticker.map((s) => ({
       id: s.id,
       category_id: s.category_id,
       name: s.name,
@@ -107,11 +111,9 @@ export async function getCategory(
       number: s.number,
       position: s.position,
       created_at: s.created_at,
-
       is_owned: Array.isArray(s.user_sticker) && s.user_sticker.length > 0,
     })),
   };
 
   return formattedData;
 }
-

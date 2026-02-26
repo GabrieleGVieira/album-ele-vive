@@ -88,7 +88,7 @@ export interface StickerWithUser {
   number: number;
   position: number;
   created_at: string;
-  user_sticker: UserSticker[]; // O retorno do Supabase vem como array
+  user_sticker?: UserSticker[];
 }
 
 export interface CategoryWithStats {
